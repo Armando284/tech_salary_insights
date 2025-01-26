@@ -1,0 +1,6 @@
+pandas
+seaborn
+matplotlib
+google-cloud-bigquery
+pytest
+python-dotenv
