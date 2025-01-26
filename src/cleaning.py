@@ -27,7 +27,6 @@ def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
         df.columns
         .str.strip()
         .str.lower()
-        .str.replace(r'[^a-z0-9_]', '', regex=True)
         .str.replace(r'\s+', '_', regex=True)
     )
     return df
@@ -43,8 +42,13 @@ def drop_missing_values(df: pd.DataFrame, threshold: Optional[float] = 0.5) -> p
     Returns:
         pd.DataFrame: The DataFrame with columns removed based on the threshold.
     """
+    # Calculates fraccion of empty values per column
     missing_fraction = df.isnull().mean()
+    
+    # Select columns over the threshold
     columns_to_drop = missing_fraction[missing_fraction > threshold].index
+    
+    # Remove selected columns
     return df.drop(columns=columns_to_drop)
 
 def fill_missing_values(df: pd.DataFrame) -> pd.DataFrame:
