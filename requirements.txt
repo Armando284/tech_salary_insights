@@ -4,3 +4,4 @@ matplotlib
 google-cloud-bigquery
 pytest
 python-dotenv
+black

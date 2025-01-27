@@ -1,6 +1,7 @@
 import pandas as pd
 from typing import Optional
 
+
 def load_dataset(file_path: str) -> pd.DataFrame:
     """
     Load a dataset from a CSV file into a Pandas DataFrame.
@@ -13,6 +14,7 @@ def load_dataset(file_path: str) -> pd.DataFrame:
     """
     return pd.read_csv(file_path)
 
+
 def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
     """
     Clean column names by making them lowercase, replacing spaces with underscores, and removing special characters.
@@ -23,15 +25,13 @@ def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: The DataFrame with cleaned column names.
     """
-    df.columns = (
-        df.columns
-        .str.strip()
-        .str.lower()
-        .str.replace(r'\s+', '_', regex=True)
-    )
+    df.columns = df.columns.str.strip().str.lower().str.replace(r"\s+", "_", regex=True)
     return df
 
-def drop_missing_values(df: pd.DataFrame, threshold: Optional[float] = 0.5) -> pd.DataFrame:
+
+def drop_missing_values(
+    df: pd.DataFrame, threshold: Optional[float] = 0.5
+) -> pd.DataFrame:
     """
     Drop columns with a percentage of missing values above a given threshold.
 
@@ -44,12 +44,13 @@ def drop_missing_values(df: pd.DataFrame, threshold: Optional[float] = 0.5) -> p
     """
     # Calculates fraccion of empty values per column
     missing_fraction = df.isnull().mean()
-    
+
     # Select columns over the threshold
     columns_to_drop = missing_fraction[missing_fraction > threshold].index
-    
+
     # Remove selected columns
     return df.drop(columns=columns_to_drop)
+
 
 def fill_missing_values(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -62,11 +63,12 @@ def fill_missing_values(df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: The DataFrame with missing values filled.
     """
     for column in df.columns:
-        if df[column].dtype == 'object':
-            df[column] = df[column].fillna('Unknown')
+        if df[column].dtype == "object":
+            df[column] = df[column].fillna("Unknown")
         else:
             df[column] = df[column].fillna(0)
     return df
+
 
 def remove_invalid_rows(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -82,14 +84,16 @@ def remove_invalid_rows(df: pd.DataFrame) -> pd.DataFrame:
     initial_row_count = len(df)
 
     # Define a regex pattern to identify invalid characters
-    invalid_characters_pattern = r'[^\x20-\x7E]'
+    invalid_characters_pattern = r"[^\x20-\x7E]"
 
     # Remove rows with invalid characters in any column
-    for column in df.select_dtypes(include=['object']).columns:
-        df = df[~df[column].str.contains(invalid_characters_pattern, regex=True, na=False)]
+    for column in df.select_dtypes(include=["object"]).columns:
+        df = df[
+            ~df[column].str.contains(invalid_characters_pattern, regex=True, na=False)
+        ]
 
     # Remove rows with unrealistic salary values (e.g., salaries above a threshold)
-    salary_columns = ['annual_base_pay', 'signing_bonus', 'annual_bonus']
+    salary_columns = ["annual_base_pay", "signing_bonus", "annual_bonus"]
     max_salary_threshold = 1e7  # Example threshold: 10 million
 
     for column in salary_columns:
@@ -103,6 +107,7 @@ def remove_invalid_rows(df: pd.DataFrame) -> pd.DataFrame:
     print(f"Rows removed during cleaning: {rows_removed}")
     return df
 
+
 def save_cleaned_dataset(df: pd.DataFrame, output_path: str) -> None:
     """
     Save the cleaned DataFrame to a CSV file.
@@ -112,6 +117,7 @@ def save_cleaned_dataset(df: pd.DataFrame, output_path: str) -> None:
         output_path (str): Path where the cleaned CSV file will be saved.
     """
     df.to_csv(output_path, index=False)
+
 
 if __name__ == "__main__":
     # Example usage of the cleaning pipeline
