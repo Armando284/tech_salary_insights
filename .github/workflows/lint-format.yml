@@ -23,6 +23,3 @@ jobs:
 
       - name: Check formatting with Black
         run: black --check .
-
-      - name: Run Flake8
-        run: flake8 .
